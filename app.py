@@ -99,14 +99,13 @@ def get_ideal_font_size_and_height(text):
 
 
 
-if not st.session_state.show_controls:
+if name:
 
   y1= 208
   date_font_size = 25
   y2 = 88
   st.session_state.name_font_size = get_ideal_font_size_and_height(name)[0]
   st.session_state.y2 = get_ideal_font_size_and_height(name)[1]
-  # st.session_state.y2 = 0
 
 
 
@@ -155,21 +154,6 @@ if name and date and (button or st.session_state.generated):
         c.restoreState()
         c.save()
 
-    def gen_overlay_dot_pdf(overlay_pdf_path, x, y, radius=3, color=Color(1, 0, 0)):
-      """
-      Create an A4‐sized PDF with just one filled circle (dot) at (x,y).
-
-      Args:
-          overlay_pdf_path (str): where to write the one‐page overlay
-          x (float): PDF‐point X coordinate (origin bottom‐left)
-          y (float): PDF‐point Y coordinate
-          radius (float): circle radius in points
-          color (reportlab.lib.colors.Color): fill color
-      """
-      c = canvas.Canvas(overlay_pdf_path, pagesize=A4)
-      c.setFillColor(color)
-      c.circle(x, y, radius, fill=1, stroke=0)
-      c.save()
 
 
     def gen_output_pdf(input_pdf, overlay_pdf, output_pdf):
@@ -194,23 +178,6 @@ if name and date and (button or st.session_state.generated):
     gen_output_pdf(input_pdf, overlay1_pdf, output1_pdf)
     gen_output_pdf(output1_pdf, overlay2_pdf, output2_pdf)    
 
-    # NOW draw a dot:
-    overlay_dot_pdf = "overlay_dot.pdf"
-    # e.g. place a red dot at x=100, y=200, radius=5pt
-    from reportlab.lib.colors import red
-    gen_overlay_dot_pdf(overlay_dot_pdf, x=28, y=40, radius=5, color=red)
-
-
-    # '''
-    # x = 28, 817 bottom left corner
-    # x = 28, 40 bottom right corner
-    # x = 160, 817 top left corner
-    # x = 160, 40 top right corner
-    # ''' 
-    # merge the dot into your final PDF
-    final_output = "output2.pdf"
-    gen_output_pdf(output2_pdf, overlay_dot_pdf, final_output)    
-    
     # Load PDF and convert first page to image
     doc = fitz.open("output2.pdf")
     page = doc.load_page(0)  # Page 0 is the first page
