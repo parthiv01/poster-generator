@@ -41,16 +41,27 @@ if 'name_font_size' not in st.session_state:
 
 
 #Name input
-raw_name = st.text_area("Name of sahyogi", height=68).strip().title()   
+raw_name = st.text_area("Name of sahyogi", height=68)
 
 def clean_text(text):
     # Replace multiple newlines with a single newline
     text = re.sub(r'\n+', '\n', text)
-    # Replace multiple spaces with a single space
+    # Replace multiple spaces or tabs with a single space
     text = re.sub(r'[ \t]+', ' ', text)
     # Strip each line and remove excess spaces
     lines = [line.strip() for line in text.strip().split('\n')]
-    return '\n'.join(lines).title()
+
+    # Custom title logic: capitalize only words starting with a letter
+    def smart_title_line(line):
+        words = line.split()
+        titled_words = [
+            word.capitalize() if word and word[0].isalpha() else word
+            for word in words
+        ]
+        return ' '.join(titled_words)
+
+    return '\n'.join([smart_title_line(line) for line in lines])
+
 
 name = clean_text(raw_name)
 
